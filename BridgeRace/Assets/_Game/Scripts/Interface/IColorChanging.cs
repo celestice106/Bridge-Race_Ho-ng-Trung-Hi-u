@@ -4,7 +4,6 @@ using UnityEngine;
 
 public interface IColorChanging 
 {
-    public void ChangeColor(ColorType color);
-
+   public void ChangeColor(ColorType color);
     public void SetRandomColor();
 }

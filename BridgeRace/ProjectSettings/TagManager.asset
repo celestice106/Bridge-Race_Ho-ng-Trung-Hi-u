@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Brick
   - Step
+  - Character
   layers:
   - Default
   - TransparentFX
@@ -13,8 +14,8 @@ TagManager:
   - Stair
   - Water
   - UI
-  - 
-  - 
+  - Ground
+  - Brick
   - 
   - 
   - 

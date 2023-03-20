@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JoystickPlayerExample : MonoBehaviour
+public class JoystickPlayerExample : UnityEngine.MonoBehaviour
 {
     public float speed;
     public VariableJoystick variableJoystick;

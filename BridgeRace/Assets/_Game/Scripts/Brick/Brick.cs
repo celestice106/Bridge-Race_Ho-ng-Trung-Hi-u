@@ -10,27 +10,26 @@ public class Brick : MonoBehaviour, IColorChanging
 
     public Data brickData;
 
-    void Start()
-    {
-        SetRandomColor();
-        ChangeColor(colorType);
-    }
-
-
-    public void SetRandomColor()
-    {
-        colorType = (ColorType)Random.Range(0, 3);
-    }
-
-
-
     public void ChangeColor(ColorType color)
     {
         colorType = color;
         brickRenderer.material = brickData.GetMats(color);
     }
 
-
-
-
+    public void SetRandomColor()
+    {
+        ChangeColor((ColorType)Random.Range(0, 3));
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag(GameTag.CHARACTER))
+        {
+            if (other.GetComponent<Character>().colorType == colorType)
+            {
+                colorType = ColorType.No_Color;
+                gameObject.SetActive(false);
+                other.GetComponent<Character>().AddBrick();
+            }
+        }
+    }
 }

@@ -5,20 +5,20 @@ using UnityEngine;
 public static class GameConstants
 {
     public const float BRICK_SPAWN_TIME = 10f;
-    public const float MOVE_SPEED = 450f;
+    public const float CHAR_MOVE_SPEED = 10f;
     public const float RAYCAST_RANGE = 2f;
-    public const float VALID_STEP_CHECKER_OFFSET = .5f;
+    public const float BRICK_FLY_SPEED = 200f;
+    public const float BRICK_FLY_TIME = .01f;
+    public const float BRICK_THICKNESS = .2f;
+    public const int MAX_BRICK_CARRIED = 10;
+    public const float GRAVITY = -9.8f;
 }
 
 public static class GameTag
 {
-    public const string PLAYER = "Player";
+    public const string CHARACTER = "Character";
     public const string BRICK = "Brick";
     public const string STEP = "Step";
-    public const string FLOOR = "Floor";
+    public const string NEXT_FLOOR = "Floor";
 }
 
-public static class GameLayer
-{
-    public const string STAIR = "Stair";
-}

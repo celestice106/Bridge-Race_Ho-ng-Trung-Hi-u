@@ -3,16 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : UnityEngine.MonoBehaviour
 {
     public static PlayerMovement ins;
 
     [SerializeField] private FloatingJoystick joystick;
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] private CharacterController controller;
     [SerializeField] private LayerMask stairLayer;
     [SerializeField] private Transform validStepChecker;
     private bool isMoving;
-
+    private float inputX;
+    private float inputZ;
+    private float y;
 
     private void Awake()
     {
@@ -34,29 +36,35 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
-        rb.velocity = new Vector3(joystick.Horizontal * GameConstants.MOVE_SPEED * Time.deltaTime, rb.velocity.y , joystick.Vertical * GameConstants.MOVE_SPEED * Time.deltaTime);
-
-        AdjustVelocityToSlope(rb.velocity);
-        if(joystick.Horizontal != 0 || joystick.Vertical != 0)
+        inputX = joystick.Horizontal;
+        inputZ = joystick.Vertical;
+        if (controller.isGrounded)
         {
-            transform.rotation = Quaternion.LookRotation(rb.velocity);
+            y = 0f;
         }
-        
-        if(!CheckValidStep())
+        else
         {
-            rb.velocity = Vector3.zero;
+            y += GameConstants.GRAVITY;
+        }
+        //movingVector = new Vector3(GameConstants.CHAR_MOVE_SPEED * inputX, tempY, GameConstants.CHAR_MOVE_SPEED * inputZ);
+        controller.Move(Time.deltaTime * new Vector3(GameConstants.CHAR_MOVE_SPEED * inputX, y, GameConstants.CHAR_MOVE_SPEED * inputZ));
+
+        if (joystick.Horizontal != 0 || joystick.Vertical != 0)
+        {
+            transform.rotation = Quaternion.LookRotation(new Vector3(GameConstants.CHAR_MOVE_SPEED * inputX, 0, GameConstants.CHAR_MOVE_SPEED * inputZ));
+        }
+
+        if (!CheckValidStep())
+        {
+            Debug.Log(isMoving);
+            StopMoving();
         }
     }
 
-    private void AdjustVelocityToSlope(Vector3 velocity)
+    private void StopMoving()
     {
-        Ray ray = new Ray(transform.position, Vector3.down);
-        if(Physics.Raycast(ray, out RaycastHit hit, GameConstants.RAYCAST_RANGE))
-        {
-            var slopeRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            var adjustedVelocity = slopeRotation * velocity;
-            velocity = adjustedVelocity;
-        }
+        controller.Move(Vector3.zero);
+        Debug.Log(isMoving);
     }
 
     private bool CheckValidStep()
@@ -66,12 +74,14 @@ public class PlayerMovement : MonoBehaviour
         {
             if (hit.transform.GetComponent<Step>().colorType == ColorType.No_Color)
             {
-                Debug.Log(hit.transform.GetComponent<Step>().colorType);
-                Debug.Log(isMoving);
-                if (PlayerStacking.ins.bricksAmount == 0)
-                    return (isMoving) ? PlayerStacking.ins.bricksAmount != 0 : PlayerStacking.ins.bricksAmount == 0;
+                return (isMoving) ? Player.ins.brickAmount != 0 : Player.ins.brickAmount == 0;
             }
         }
         return isMoving;
     }
+
+    /*private bool CheckGround()
+    {
+        return (Physics.Raycast(transform.position + Vector3.up * .2f, Vector3.down, GameConstants.RAYCAST_RANGE / 9f, groundLayer)) || (Physics.Raycast(transform.position + Vector3.up * .2f, Vector3.down, GameConstants.RAYCAST_RANGE / 5f, stairLayer));
+    }*/
 }

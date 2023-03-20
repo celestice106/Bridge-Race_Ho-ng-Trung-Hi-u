@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool : MonoBehaviour
+public class ObjectPool : UnityEngine.MonoBehaviour
 {
     public static ObjectPool ins;
     public List<GameObject> pooledObject;

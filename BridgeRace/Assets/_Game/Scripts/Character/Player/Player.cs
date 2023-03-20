@@ -6,6 +6,8 @@ public class Player : Character
 {
     public static Player ins;
 
+    //[SerializeField] private CharStacking charStacking;
+
     private void Awake()
     {
         ins = this;
@@ -14,13 +16,13 @@ public class Player : Character
     {
         OnInit();
         SetRandomColor();
-        ChangeColor(this.colorType);
     }
 
-    
 
     public override void OnInit()
     {
+        this.brickStack = new Stack<GameObject>();
+        this.brickStack.Push(this.bag);
         base.OnInit();
     }
 
@@ -35,32 +37,29 @@ public class Player : Character
 
     private void OnTriggerEnter(Collider other)
     {
-        switch (other.tag)
+        /*switch (other.tag)
         {
-            case GameTag.BRICK:
+            *//*case GameTag.BRICK:
                 if (this.colorType == other.GetComponent<Brick>().colorType)
                 {
-                    BrickSpawing.ins.GetTakenBricksPos(other.gameObject);
-                    StartCoroutine(BrickSpawing.ins.SpawnBrick());
-                    PlayerStacking.ins.AddBrick(other.gameObject);
+                    AddBrick(other.gameObject, playerBag, playerStack);
+                    playerBrickAmount++;
+                    Debug.Log("playerBrickAmount: " + playerBrickAmount);
                 }
-
-                break;
+                break;*//*
             case GameTag.STEP:
-                if( other.GetComponent<Step>().colorType != this.colorType)
+                if (colorType != other.GetComponent<Step>().colorType)
                 {
-                    if(PlayerStacking.ins.bricksAmount != 0)
+                    if (playerBrickAmount != 0)
                     {
-                        other.GetComponent<Step>().ChangeColor(this.colorType);
-                        other.GetComponent<MeshRenderer>().enabled = true;
-                        PlayerStacking.ins.bricksAmount--;
+                        PlaceBrick(other.gameObject, this.brickStack, this.colorType);
+                        playerBrickAmount--;
                     }
                 }
                 break;
-        }
-
+        }*/
     }
 
 
-    
+
 }
