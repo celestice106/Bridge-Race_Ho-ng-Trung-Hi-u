@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Step : UnityEngine.MonoBehaviour, IColorChanging
+public class Step : MonoBehaviour, IColorChanging
 {
     public Data stepData;
 

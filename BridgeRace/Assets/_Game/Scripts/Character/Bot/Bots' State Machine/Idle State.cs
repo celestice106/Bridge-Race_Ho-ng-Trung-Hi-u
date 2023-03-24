@@ -12,7 +12,6 @@ public class IdleState : IState
         timer = 0;
         randomTime = Random.Range(2f, 4f);
     }
-
     public void OnExecute(Bot bot)
     {
         timer += Time.deltaTime;

@@ -4,23 +4,26 @@ using UnityEngine;
 
 public class Character : MonoBehaviour, IColorChanging
 {
-    public int colorRange;
-
-    public Stack<GameObject> brickStack;
+    public int brickAmount;
 
     public Data charData;
 
     public ColorType colorType;
 
-    public SkinnedMeshRenderer charRenderer;
+    protected string currentAnimName;
 
-    public string currentAnimName;
+    protected int colorRange = 3;
 
-    public int brickAmount;
+    protected Stack<GameObject> brickStack;
+
+    [SerializeField] protected GameObject bag;
 
     [SerializeField] private Animator anim;
 
-    [SerializeField] protected GameObject bag;
+    [SerializeField] SkinnedMeshRenderer charRenderer;
+
+    protected bool isFalling;
+
     public virtual void SetRandomColor()
     {
         ChangeColor((ColorType)Random.Range(0, colorRange));
@@ -31,7 +34,7 @@ public class Character : MonoBehaviour, IColorChanging
         charRenderer.material = charData.GetMats(color);
     }
 
-    public virtual void OnInit()
+    protected virtual void OnInit()
     {
 
     }
@@ -42,19 +45,27 @@ public class Character : MonoBehaviour, IColorChanging
         GameObject brick = ObjectPool.ins.GetPooledObject();
         brick.SetActive(true);
         brick.GetComponent<Brick>().ChangeColor(colorType);
-        Debug.Log(brick.GetComponent<Brick>().colorType);
         brick.transform.parent = bag.transform;
+        brick.GetComponent<BoxCollider>().enabled = false;
 
         Vector3 offset = Vector3.up * GameConstants.BRICK_THICKNESS;
+        if(brickStack.Count == 0)
+        {
+            Vector3 firstPosition = bag.transform.position;
+            brick.transform.SetPositionAndRotation(firstPosition, bag.transform.rotation);
+            brickStack.Push(brick);
+        }
+        else
+        {
+            Vector3 lastPosition = brickStack.Peek().transform.position;
+            Vector3 newPosition = lastPosition + offset;
 
-        Vector3 lastPosition = brickStack.Peek().transform.position;
-        Vector3 newPosition = lastPosition + offset;
 
-
-        brick.transform.SetPositionAndRotation(newPosition, brickStack.Peek().transform.rotation);
-        //StartCoroutine(BrickFly(brick, newPosition));
-        //brick.transform.rotation = bricks.Peek().transform.rotation;
-        brickStack.Push(brick);
+            brick.transform.SetPositionAndRotation(newPosition, brickStack.Peek().transform.rotation);
+            //StartCoroutine(BrickFly(brick, newPosition));
+            //brick.transform.rotation = bricks.Peek().transform.rotation;
+            brickStack.Push(brick);
+        }
     }
 
     public void PlaceBrick()
@@ -64,23 +75,53 @@ public class Character : MonoBehaviour, IColorChanging
         brickStack.Pop().SetActive(false);
     }
 
-
-
-
-    /*private IEnumerator BrickFly(GameObject brick, Vector3 targetPosition)
+    private void  StandUp()
     {
-        brick.transform.position = Vector3.MoveTowards(brick.transform.position, targetPosition, GameConstants.BRICK_FLY_SPEED * Time.deltaTime);
-        yield return new WaitForSeconds(GameConstants.BRICK_FLY_TIME);
+        isFalling = false;
+        ChangeAnim(AnimName.IDLE);
+    }
 
-    }*/
+    private void DropAllBricks()
+    {
+        foreach (GameObject brick in brickStack)
+        {
+            brick.GetComponent<BoxCollider>().enabled = true;
+            brick.GetComponent<Brick>().TurnOnPhysics();
+            brick.transform.parent = null;
+        }
+        brickStack.Clear();
+        brickAmount = 0;
+    }
 
-    protected void ChangeAnim(string animName)
+
+    private void Fall()
+    {
+        isFalling = true;
+        Invoke(nameof(StandUp), 2f);
+        ChangeAnim(AnimName.FALL);
+        DropAllBricks();
+    }
+
+    public void ChangeAnim(string animName)
     {
         if (currentAnimName != animName)
         {
             anim.ResetTrigger(animName);
             currentAnimName = animName;
             anim.SetTrigger(currentAnimName);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag(GameTag.CHARACTER))
+        {
+            if (brickAmount < collision.gameObject.GetComponent<Character>().brickAmount)
+            {
+                Fall();
+                Debug.Log("Player: " + Player.ins.brickAmount);
+                Debug.Log("Bot: " + Bot.ins.brickAmount);
+            }
         }
     }
 }

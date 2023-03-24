@@ -14,8 +14,4 @@ public class Data : ScriptableObject
     {
         return materials[(int)color];
     }
-    public ColorType SetRandomColor()
-    {
-        return (ColorType)Random.Range(0, 3);
-    }
 }

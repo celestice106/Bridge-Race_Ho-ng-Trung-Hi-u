@@ -15,8 +15,6 @@ public class BuildState : IState
     public void OnExecute(Bot bot)
     {
         BotAction.ins.BuildBridge();
-        Debug.Log(BotAction.ins.agent.destination);
-        Debug.Log(BotAction.ins.finalTarget.transform.position);
         if (bot.brickAmount == 0)
         {
             bot.ChangeState(new IdleState());

@@ -20,8 +20,8 @@ public class BotAction : MonoBehaviour
     }
     private void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
         targetedBrick = null;
+        agent = GetComponent<NavMeshAgent>();
     }
 
 

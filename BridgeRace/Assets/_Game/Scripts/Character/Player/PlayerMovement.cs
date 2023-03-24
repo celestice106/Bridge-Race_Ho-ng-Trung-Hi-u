@@ -3,85 +3,77 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : UnityEngine.MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     public static PlayerMovement ins;
+    public bool isMoving;
 
-    [SerializeField] private FloatingJoystick joystick;
-    [SerializeField] private CharacterController controller;
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Joystick joystick;
     [SerializeField] private LayerMask stairLayer;
     [SerializeField] private Transform validStepChecker;
-    private bool isMoving;
-    private float inputX;
-    private float inputZ;
-    private float y;
 
     private void Awake()
     {
         ins = this;
     }
-    private void Start()
-    {
-        OnInit();
-    }
-
-    public void OnInit()
-    {
-        isMoving = true;
-    }
     private void FixedUpdate()
     {
+        CheckValidStep();
         Move();
     }
 
     private void Move()
     {
-        inputX = joystick.Horizontal;
-        inputZ = joystick.Vertical;
-        if (controller.isGrounded)
+        float horizontal = joystick.InputHorizontal();
+        float vertical = joystick.InputVertical();
+        //Vector3 slopeForceDirection;
+        Vector3 movement = new Vector3(horizontal, 0f, vertical);
+        
+        if (movement != Vector3.zero)
         {
-            y = 0f;
+            Player.ins.ChangeAnim(AnimName.RUN);
+            Quaternion targetRotation = Quaternion.LookRotation(movement);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 10f * Time.fixedDeltaTime);
+            rb.velocity = GameConstants.CHAR_MOVE_SPEED * Time.deltaTime * movement;
         }
-        else
+        /*RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, GameConstants.RAYCAST_RANGE))
         {
-            y += GameConstants.GRAVITY;
-        }
-        //movingVector = new Vector3(GameConstants.CHAR_MOVE_SPEED * inputX, tempY, GameConstants.CHAR_MOVE_SPEED * inputZ);
-        controller.Move(Time.deltaTime * new Vector3(GameConstants.CHAR_MOVE_SPEED * inputX, y, GameConstants.CHAR_MOVE_SPEED * inputZ));
+            if (hit.normal != Vector3.up)
+            {
+                slopeForceDirection = Vector3.Cross(Vector3.up, hit.normal.normalized);
+                rb.velocity += slopeForceDirection *5f * Time.deltaTime;
+            }
+        }*/
 
-        if (joystick.Horizontal != 0 || joystick.Vertical != 0)
+        if (movement == Vector3.zero)
         {
-            transform.rotation = Quaternion.LookRotation(new Vector3(GameConstants.CHAR_MOVE_SPEED * inputX, 0, GameConstants.CHAR_MOVE_SPEED * inputZ));
+            Player.ins.ChangeAnim(AnimName.IDLE);
         }
-
-        if (!CheckValidStep())
+        if (!isMoving)
         {
-            Debug.Log(isMoving);
             StopMoving();
         }
     }
 
-    private void StopMoving()
+    public void StopMoving()
     {
-        controller.Move(Vector3.zero);
-        Debug.Log(isMoving);
+        rb.velocity = Vector3.zero;
     }
 
-    private bool CheckValidStep()
+    private void CheckValidStep()
     {
         Ray ray = new Ray(validStepChecker.position, Vector3.down);
         if (Physics.Raycast(ray, out RaycastHit hit, GameConstants.RAYCAST_RANGE, stairLayer))
         {
             if (hit.transform.GetComponent<Step>().colorType == ColorType.No_Color)
             {
-                return (isMoving) ? Player.ins.brickAmount != 0 : Player.ins.brickAmount == 0;
+                if (Player.ins.brickAmount == 0)
+                    isMoving = false;
+                else
+                    isMoving = true;
             }
         }
-        return isMoving;
     }
-
-    /*private bool CheckGround()
-    {
-        return (Physics.Raycast(transform.position + Vector3.up * .2f, Vector3.down, GameConstants.RAYCAST_RANGE / 9f, groundLayer)) || (Physics.Raycast(transform.position + Vector3.up * .2f, Vector3.down, GameConstants.RAYCAST_RANGE / 5f, stairLayer));
-    }*/
 }

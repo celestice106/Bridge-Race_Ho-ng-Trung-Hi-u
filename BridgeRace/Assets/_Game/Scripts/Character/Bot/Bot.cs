@@ -29,6 +29,11 @@ public class Bot : Character
         {
             currentState.OnExecute(this);
         }
+
+        if(isFalling)
+        {
+            StopMoving();
+        }
     }
     public override void ChangeColor(ColorType color)
     {
@@ -37,18 +42,17 @@ public class Bot : Character
 
     public override void SetRandomColor()
     {
+        this.colorRange = base.colorRange - 1;
         base.SetRandomColor();
     }
 
-    public override void OnInit()
+    protected override void OnInit()
     {
         this.brickStack = new Stack<GameObject>();
-        this.brickStack.Push(this.bag);
         ChangeState(new FindingState());
         base.OnInit();
     }
 
-    
     public void StopMoving()
     {
         BotAction.ins.agent.velocity = Vector3.zero;
@@ -84,7 +88,6 @@ public class Bot : Character
         }
     }
 
-    
     public void ChangeState(IState newState)
     {
         if (currentState != null)
