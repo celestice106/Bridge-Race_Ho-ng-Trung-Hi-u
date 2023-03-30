@@ -57,6 +57,10 @@ public class Brick : MonoBehaviour, IColorChanging
                 colorType = ColorType.No_Color;
                 gameObject.SetActive(false);
                 other.GetComponent<Character>().AddBrick();
+                if (other.GetComponent<Player>() != null)
+                {
+                    DataManager.ins.score++;
+                }
             }
         }
     }

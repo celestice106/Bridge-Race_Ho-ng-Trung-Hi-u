@@ -7,12 +7,18 @@ public class PlayerMovement : MonoBehaviour
 {
     public static PlayerMovement ins;
     public bool isMoving;
+    public Vector3 direction;
 
     [SerializeField] private Rigidbody rb;
-    [SerializeField] private Joystick joystick;
+    private float joystickRadius = 120f;
+    private Vector3 firstMousePosition;
+    private Vector3 currentMousePosition;
+    [SerializeField] private GameObject joystick;
+    [SerializeField] private GameObject joystickBackground;
+    [SerializeField] private GameObject joystickHandle;
     [SerializeField] private LayerMask stairLayer;
     [SerializeField] private Transform validStepChecker;
-
+    private bool isGround;
     private void Awake()
     {
         ins = this;
@@ -20,36 +26,65 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         CheckValidStep();
+        isGround = CheckGround();
         Move();
     }
 
     private void Move()
     {
-        float horizontal = joystick.InputHorizontal();
-        float vertical = joystick.InputVertical();
-        //Vector3 slopeForceDirection;
-        Vector3 movement = new Vector3(horizontal, 0f, vertical);
-        
-        if (movement != Vector3.zero)
+        if (!Player.ins.isFalling && joystick.activeSelf)
         {
-            Player.ins.ChangeAnim(AnimName.RUN);
-            Quaternion targetRotation = Quaternion.LookRotation(movement);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 10f * Time.fixedDeltaTime);
-            rb.velocity = GameConstants.CHAR_MOVE_SPEED * Time.deltaTime * movement;
-        }
-        /*RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, GameConstants.RAYCAST_RANGE))
-        {
-            if (hit.normal != Vector3.up)
+            if (Input.GetMouseButtonDown(0))
             {
-                slopeForceDirection = Vector3.Cross(Vector3.up, hit.normal.normalized);
-                rb.velocity += slopeForceDirection *5f * Time.deltaTime;
+                firstMousePosition = Input.mousePosition;
+                joystick.transform.position = firstMousePosition;
             }
-        }*/
 
-        if (movement == Vector3.zero)
+            if (Input.GetMouseButton(0))
+            {
+                currentMousePosition = Input.mousePosition;
+                direction = currentMousePosition - firstMousePosition;
+                joystickHandle.transform.position = currentMousePosition;
+                if (Vector3.Distance(joystickHandle.transform.position, joystickBackground.transform.position) > joystickRadius)
+                {
+                    joystickHandle.transform.position = joystickBackground.transform.position - (joystickBackground.transform.position - joystickHandle.transform.position).normalized * joystickRadius;
+                }
+                if (Vector3.Distance(joystickHandle.transform.position, joystickBackground.transform.position) > joystickRadius / 2)
+                {
+                    transform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y));
+                    Player.ins.ChangeAnim(AnimName.RUN);
+                    /*if (direction.y > 0.1f)
+                    {
+                        rb.velocity = new Vector3((float)direction.normalized.x, bridgeDirection.y, (float)direction.normalized.y) * GameConstants.CHAR_MOVE_SPEED / 1.3f;
+                    }
+                    else if (onBridge && direction.y < 0.1f)
+                    {
+                        rb.velocity = new Vector3((float)direction.normalized.x, -bridgeDirection.y, (float)direction.normalized.y) * GameConstants.CHAR_MOVE_SPEED / 1.5f;
+                    }*/
+                    //else
+
+                    Vector3 newMovement = new Vector3(direction.normalized.x, rb.velocity.y, direction.normalized.y) * GameConstants.CHAR_MOVE_SPEED / 1.5f;
+                    if (!isGround)
+                    {
+                        newMovement.y = -10f;
+                    }
+                    else
+                    {
+                        newMovement.y = 0f;
+                    }
+                    rb.velocity = newMovement;
+                }
+
+            }
+        }
+        if (Input.GetMouseButtonUp(0))
         {
-            Player.ins.ChangeAnim(AnimName.IDLE);
+            if (!Player.ins.isFalling)
+            {
+                Player.ins.ChangeAnim(AnimName.IDLE);
+            }
+            joystick.transform.position += new Vector3(10000, 0, 0);
+            rb.velocity = new Vector3(0, 0, 0);
         }
         if (!isMoving)
         {
@@ -57,6 +92,18 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private bool CheckGround()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, -transform.up, out hit, GameConstants.RAYCAST_RANGE))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public void StopMoving()
     {
         rb.velocity = Vector3.zero;
@@ -67,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
         Ray ray = new Ray(validStepChecker.position, Vector3.down);
         if (Physics.Raycast(ray, out RaycastHit hit, GameConstants.RAYCAST_RANGE, stairLayer))
         {
-            if (hit.transform.GetComponent<Step>().colorType == ColorType.No_Color)
+            if (hit.transform.GetComponent<Step>().colorType != Player.ins.colorType)
             {
                 if (Player.ins.brickAmount == 0)
                     isMoving = false;

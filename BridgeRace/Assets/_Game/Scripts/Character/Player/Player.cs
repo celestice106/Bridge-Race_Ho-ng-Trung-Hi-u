@@ -35,4 +35,13 @@ public class Player : Character
     {
         base.ChangeColor(color);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(GameTag.WIN_ZONE))
+        {
+            ChangeAnim(AnimName.CHEER);
+            UIManager.Ins.OpenUI<Win>();
+        }
+    }
 }

@@ -6,7 +6,6 @@ public class BrickSpawner : MonoBehaviour
 {
     public Dictionary<int, List<GameObject>> floorBricks = new Dictionary<int, List<GameObject>>();
 
-
     public static BrickSpawner ins;
 
     private float timer;

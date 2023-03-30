@@ -6,14 +6,15 @@ using UnityEngine.AI;
 public class BotAction : MonoBehaviour
 {
     public static BotAction ins;
-
+    public int currentFloor;
     public bool IsDestination => Vector3.Distance(new Vector3(transform.position.x, targetedBrick.transform.position.y, transform.position.z), targetedBrick.transform.position) < 0.1f;
 
     public NavMeshAgent agent;
+    public GameObject finalTarget;
     public GameObject targetedBrick;
 
     //[SerializeField] private GameObject finalTarget;
-    public GameObject finalTarget;
+    [SerializeField] private GameObject[] destination;
     private void Awake()
     {
         ins = this;
@@ -24,6 +25,10 @@ public class BotAction : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
     }
 
+    private void Update()
+    {
+        //finalTarget = destination[currentFloor];
+    }
 
     public void FindBrick()
     {
@@ -33,11 +38,11 @@ public class BotAction : MonoBehaviour
         }
         MoveToTarget();
     }
-
     public void BuildBridge()
     {
         SetDes(finalTarget);
         agent.isStopped = false;
+   
     }
 
     private void MoveToTarget()
@@ -46,9 +51,14 @@ public class BotAction : MonoBehaviour
         {
             SetDes(targetedBrick);
             agent.isStopped = false;
+            
         }
     }
-
+    public void StopMoving()
+    {
+        agent.velocity = Vector3.zero;
+        agent.isStopped = true;
+    }
 
     public void SetDes(GameObject targetedBrick)
     {
@@ -59,14 +69,14 @@ public class BotAction : MonoBehaviour
     {
         float minDistance = Mathf.Infinity;
         GameObject closestTarget = null;
-        List<GameObject> brickList = BrickSpawner.ins.floorBricks[Bot.ins.currentFloor];
+        List<GameObject> brickList = BrickSpawner.ins.floorBricks[BotAction.ins.currentFloor];
         foreach (GameObject brickObject in brickList)
         {
             Brick brick = brickObject.GetComponent<Brick>();
-            if(brick.colorType == color)
+            if (brick.colorType == color)
             {
                 float distance = Vector3.Distance(transform.position, brickObject.transform.position);
-                if(distance < minDistance)
+                if (distance < minDistance)
                 {
                     closestTarget = brickObject;
                     minDistance = distance;
@@ -74,5 +84,19 @@ public class BotAction : MonoBehaviour
             }
         }
         return closestTarget;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag(GameTag.NEXT_FLOOR))
+        {
+            currentFloor++;
+            Destroy(other.gameObject);
+        }   
+        if(other.CompareTag(GameTag.WIN_ZONE))
+        {
+            Bot.ins.ChangeAnim(AnimName.CHEER);
+            UIManager.Ins.OpenUI<Lose>();
+        }
     }
 }

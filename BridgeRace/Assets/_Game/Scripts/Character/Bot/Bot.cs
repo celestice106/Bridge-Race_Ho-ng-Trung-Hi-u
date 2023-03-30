@@ -31,8 +31,12 @@ public class Bot : Character
         }
 
         if(isFalling)
+        { 
+            BotAction.ins.StopMoving();
+        }
+        if(!isFalling && BotAction.ins.agent.isStopped == false)
         {
-            StopMoving();
+            ChangeAnim(AnimName.RUN);
         }
     }
     public override void ChangeColor(ColorType color)
@@ -53,40 +57,8 @@ public class Bot : Character
         base.OnInit();
     }
 
-    public void StopMoving()
-    {
-        BotAction.ins.agent.velocity = Vector3.zero;
-        BotAction.ins.agent.isStopped = true;
-        ChangeAnim("Idle");
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        switch (other.tag)
-        {
-            /*case GameTag.BRICK:
-                if (this.colorType == other.GetComponent<Brick>().colorType)
-                {
-                    AddBrick(other.gameObject, botBag, botStack);
-                    botBrickAmount++;
-                }
-                break;*//*
-            case GameTag.STEP:
-                if (colorType != other.GetComponent<Step>().colorType)
-                {
-                    if (botBrickAmount != 0)
-                    {
-                        PlaceBrick(other.gameObject, this.brickStack, this.colorType);
-                        botBrickAmount--;
-                    }
-                }
-                break;*/
-            case GameTag.NEXT_FLOOR:
-                currentFloor++;
-                //GetAllBricksPos();
-                break;
-        }
-    }
+    
 
     public void ChangeState(IState newState)
     {

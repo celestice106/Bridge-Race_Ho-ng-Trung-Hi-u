@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace LayerLab.CasualGame
 {
-    public class PanelControlCasualGame : UnityEngine.MonoBehaviour
+    public class PanelControlCasualGame : MonoBehaviour
     {
         private int page = 0;
         private bool isReady = false;

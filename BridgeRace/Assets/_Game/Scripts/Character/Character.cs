@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour, IColorChanging
 {
+    public bool isFalling;
     public int brickAmount;
 
     public Data charData;
@@ -21,8 +22,8 @@ public class Character : MonoBehaviour, IColorChanging
     [SerializeField] private Animator anim;
 
     [SerializeField] SkinnedMeshRenderer charRenderer;
+    [SerializeField] private Rigidbody rb;
 
-    protected bool isFalling;
 
     public virtual void SetRandomColor()
     {
@@ -77,6 +78,7 @@ public class Character : MonoBehaviour, IColorChanging
 
     private void  StandUp()
     {
+        rb.isKinematic = false;
         isFalling = false;
         ChangeAnim(AnimName.IDLE);
     }
@@ -96,9 +98,11 @@ public class Character : MonoBehaviour, IColorChanging
 
     private void Fall()
     {
+        rb.isKinematic = true;
         isFalling = true;
         Invoke(nameof(StandUp), 2f);
         ChangeAnim(AnimName.FALL);
+        Debug.Log(currentAnimName);
         DropAllBricks();
     }
 
@@ -119,9 +123,14 @@ public class Character : MonoBehaviour, IColorChanging
             if (brickAmount < collision.gameObject.GetComponent<Character>().brickAmount)
             {
                 Fall();
-                Debug.Log("Player: " + Player.ins.brickAmount);
-                Debug.Log("Bot: " + Bot.ins.brickAmount);
             }
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag(GameTag.WIN_ZONE))
+        {
+            ChangeAnim(AnimName.CHEER);
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LayerLab.CasualGame
 {
-    public class PanelCasualGame : UnityEngine.MonoBehaviour
+    public class PanelCasualGame : MonoBehaviour
     {
         [SerializeField] private GameObject[] otherPanels;
 
