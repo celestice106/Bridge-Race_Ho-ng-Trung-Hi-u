@@ -8,17 +8,13 @@ public class Brick : MonoBehaviour, IColorChanging
 
     public Data brickData;
 
-    public static Brick ins;
+    public List<ColorType> validColor = new List<ColorType>();
 
     [SerializeField] private MeshRenderer brickRenderer;
 
     [SerializeField] private Rigidbody rb;
 
     [SerializeField] private BoxCollider brickCollider;
-    private void Awake()
-    {
-        ins = this;
-    }
 
     private void Start()
     {
@@ -32,7 +28,7 @@ public class Brick : MonoBehaviour, IColorChanging
 
     public void SetRandomColor()
     {
-        ChangeColor((ColorType)Random.Range(0, 3));
+
     }
     public void TurnOffPhysics()
     {
@@ -57,10 +53,6 @@ public class Brick : MonoBehaviour, IColorChanging
                 colorType = ColorType.No_Color;
                 gameObject.SetActive(false);
                 other.GetComponent<Character>().AddBrick();
-                if (other.GetComponent<Player>() != null)
-                {
-                    DataManager.ins.score++;
-                }
             }
         }
     }

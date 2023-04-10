@@ -13,14 +13,14 @@ public class FindingState : IState
     public void OnExecute(Bot bot)
     {
         //bot.ChangeAnim(AnimName.RUN);
-        BotAction.ins.FindBrick();
-        if (BotAction.ins.IsDestination)
+        bot.FindBrick();
+        if (bot.IsDestination)
         {
             if (bot.brickAmount >= GameConstants.MAX_BRICK_CARRIED + Random.Range(1, 3))
             {
                 bot.ChangeState(new BuildState());
             }
-            BotAction.ins.targetedBrick = null;
+            bot.targetedBrick = null;
         }
 
         /*if (bot.brickAmount >= Random.Range(5, 8))

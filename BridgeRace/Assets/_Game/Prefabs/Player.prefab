@@ -104,7 +104,7 @@ MonoBehaviour:
   isFalling: 0
   brickAmount: 0
   charData: {fileID: 11400000, guid: b3e97ea59f614b04cb72f516193636fa, type: 2}
-  colorType: 0
+  colorType: 3
   bag: {fileID: 3443756226194873923}
   anim: {fileID: 3443756225781133957}
   charRenderer: {fileID: 6086811949427783478}
@@ -295,7 +295,7 @@ PrefabInstance:
     - target: {fileID: -310153274918992457, guid: 93b6444b4be9ecc44a98a83cef570ca8, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: a0622a2b2daf2e643a5ddd4b68c9a2c9, type: 2}
+      objectReference: {fileID: 2100000, guid: f0479f7704fb1a04e9809c176b53a1ea, type: 2}
     - target: {fileID: 534567897379267242, guid: 93b6444b4be9ecc44a98a83cef570ca8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 14.410287

@@ -12,4 +12,10 @@ public class Lose : UICanvas
         UIManager.Ins.OpenUI<MainMenu>();
         Close(0);
     }
+
+    public void ReplayButton()
+    {
+        LevelManager.Ins.ReplayLevel();
+        Close(0);
+    }
 }

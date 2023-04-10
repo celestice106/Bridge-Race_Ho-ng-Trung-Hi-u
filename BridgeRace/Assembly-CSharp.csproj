@@ -61,6 +61,7 @@
     <Compile Include="Assets\GUI PRO Kit - Casual Game\Scripts\PanelControlCasualGame.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
+    <Compile Include="Assets\_Game\Scripts\Map\Floor.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
     <Compile Include="Assets\_Game\Scripts\Manager\UI\Lose.cs" />
     <Compile Include="Assets\_Game\Scripts\Brick\BrickSpawner.cs" />
@@ -68,7 +69,9 @@
     <Compile Include="Assets\_Game\Scripts\Character\Bot\Bots&apos; State Machine\Finding State.cs" />
     <Compile Include="Assets\_Pool\Pool\GameUnit.cs" />
     <Compile Include="Assets\_Game\Scripts\Manager\UI\GamePlay.cs" />
+    <Compile Include="Assets\_Game\Scripts\Level.cs" />
     <Compile Include="Assets\_Game\Scripts\Joystick.cs" />
+    <Compile Include="Assets\_Game\Scripts\Manager\Data Manager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\_Game\Scripts\Manager\GameManager.cs" />
     <Compile Include="Assets\_Game\Scripts\Character\Player\Player.cs" />
@@ -91,6 +94,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
     <Compile Include="Assets\_Pool\Pool\ParticlePool.cs" />
     <Compile Include="Assets\_Pool\Bullet.cs" />
+    <Compile Include="Assets\_Game\Scripts\Map\Bridge.cs" />
     <Compile Include="Assets\_Game\Scripts\Character\Character.cs" />
     <Compile Include="Assets\GUI PRO Kit - Casual Game\Extensions\UIParticle\UIParticleSystem.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
@@ -98,6 +102,7 @@
     <Compile Include="Assets\_Game\Scripts\Scriptable Objects\Data.cs" />
     <Compile Include="Assets\_Game\Scripts\Manager\UI\UIManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
+    <Compile Include="Assets\LevelManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\_Game\Scripts\Character\Player\PlayerMovement.cs" />
@@ -128,7 +133,6 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
     <Compile Include="Assets\_Game\Scripts\Object Pooling\ObjectPool.cs" />
-    <Compile Include="Assets\_Game\Scripts\Manager\Data Manager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

@@ -12,4 +12,15 @@ public class Win : UICanvas
         UIManager.Ins.OpenUI<MainMenu>();
         Close(0);
     }
+    public void ReplayButton()
+    {
+        LevelManager.Ins.ReplayLevel();
+        Close(0);
+    }
+
+    public void NextLevelButton()
+    {
+        LevelManager.Ins.LevelUp();
+        Close(0);
+    }
 }

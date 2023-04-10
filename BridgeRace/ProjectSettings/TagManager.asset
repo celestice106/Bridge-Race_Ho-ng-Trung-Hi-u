@@ -9,6 +9,7 @@ TagManager:
   - Character
   - Floor
   - Win zone
+  - Bridge
   layers:
   - Default
   - TransparentFX

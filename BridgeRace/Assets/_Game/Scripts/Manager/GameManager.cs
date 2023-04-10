@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    public bool isWin = false;
-    public bool isLose = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,17 +14,10 @@ public class GameManager : Singleton<GameManager>
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.P))
         {
+            Debug.Log("reached");
             Pause();
-        }
-        if (isWin)
-        {
-            UIManager.Ins.OpenUI<Win>();
-        }
-        if (isLose)
-        {
-            UIManager.Ins.OpenUI<Lose>();
         }
     }
 

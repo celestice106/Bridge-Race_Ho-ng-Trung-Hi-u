@@ -5,7 +5,7 @@ using UnityEngine;
 public static class GameConstants
 {
     public const float BRICK_SPAWN_TIME = 10f;
-    public const float CHAR_MOVE_SPEED = 15f;
+    public const float CHAR_MOVE_SPEED = 10f;
     public const float RAYCAST_RANGE = 2f;
     public const float BRICK_SPREAD = 10f;
     public const float BRICK_FLY_SPEED = 50f;
@@ -22,6 +22,7 @@ public static class GameTag
     public const string STEP = "Step";
     public const string NEXT_FLOOR = "Floor";
     public const string WIN_ZONE = "Win zone";
+    public static string BRIDGE = "Bridge";
 }
 
 public static class AnimName
@@ -31,4 +32,5 @@ public static class AnimName
     public const string FALL = "Fall";
     public const string CHEER = "Cheer";
 }
+
 

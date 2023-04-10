@@ -6,14 +6,13 @@ public class Character : MonoBehaviour, IColorChanging
 {
     public bool isFalling;
     public int brickAmount;
+    public Bridge bridge;
 
     public Data charData;
 
     public ColorType colorType;
 
     protected string currentAnimName;
-
-    protected int colorRange = 3;
 
     protected Stack<GameObject> brickStack;
 
@@ -24,10 +23,20 @@ public class Character : MonoBehaviour, IColorChanging
     [SerializeField] SkinnedMeshRenderer charRenderer;
     [SerializeField] private Rigidbody rb;
 
+    public bool onBridge = false;
+    public static List<ColorType> colorList = new List<ColorType>();
 
     public virtual void SetRandomColor()
     {
-        ChangeColor((ColorType)Random.Range(0, colorRange));
+        ChangeColor((ColorType)Random.Range(0, 3));
+        if(!colorList.Contains(colorType))
+        {
+            colorList.Add(colorType);
+        }
+        else
+        {
+            SetRandomColor();
+        }
     }
     public virtual void ChangeColor(ColorType color)
     {
@@ -120,17 +129,42 @@ public class Character : MonoBehaviour, IColorChanging
     {
         if (collision.gameObject.CompareTag(GameTag.CHARACTER))
         {
-            if (brickAmount < collision.gameObject.GetComponent<Character>().brickAmount)
+            if (brickAmount < collision.gameObject.GetComponent<Character>().brickAmount && !collision.gameObject.GetComponent<Character>().onBridge && !this.onBridge && !this.isFalling)
             {
                 Fall();
             }
         }
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag(GameTag.WIN_ZONE))
         {
+            LevelManager.Ins.isFinished = true;
             ChangeAnim(AnimName.CHEER);
+            if(GetComponent<Player>() is Player)
+            {
+                UIManager.Ins.OpenUI<Win>();
+            }
+            else if (GetComponent<Bot>() is Bot)
+            {
+                UIManager.Ins.OpenUI<Lose>();
+            }
         }
+        if(other.CompareTag(GameTag.BRIDGE))
+        {
+            bridge = other.GetComponent<Bridge>();
+            onBridge = true;
+            Debug.Log("reached bridge");
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag(GameTag.BRIDGE))
+        {
+            onBridge = false;
+        }
+
     }
 }

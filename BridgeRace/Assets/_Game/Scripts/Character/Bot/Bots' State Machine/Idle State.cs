@@ -8,13 +8,12 @@ public class IdleState : IState
     public float randomTime;
    public void OnEnter(Bot bot)
     {
-        BotAction.ins.StopMoving();
         timer = 0;
-        randomTime = Random.Range(2f, 4f);
+        randomTime = Random.Range(1f, 3f);
     }
     public void OnExecute(Bot bot)
     {
-        bot.ChangeAnim(AnimName.IDLE);
+        bot.StopMoving();
         timer += Time.deltaTime;
         if(timer >= randomTime)
         {

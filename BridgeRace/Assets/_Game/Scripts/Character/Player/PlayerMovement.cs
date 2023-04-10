@@ -13,12 +13,15 @@ public class PlayerMovement : MonoBehaviour
     private float joystickRadius = 120f;
     private Vector3 firstMousePosition;
     private Vector3 currentMousePosition;
+    private Vector3 BridgeDirection => GetComponent<Player>().bridge.bridgeDirection;
+    public bool OnBridge => GetComponent<Player>().onBridge;
+
     [SerializeField] private GameObject joystick;
     [SerializeField] private GameObject joystickBackground;
     [SerializeField] private GameObject joystickHandle;
     [SerializeField] private LayerMask stairLayer;
     [SerializeField] private Transform validStepChecker;
-    private bool isGround;
+    public bool isGround;
     private void Awake()
     {
         ins = this;
@@ -53,28 +56,28 @@ public class PlayerMovement : MonoBehaviour
                 {
                     transform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y));
                     Player.ins.ChangeAnim(AnimName.RUN);
-                    /*if (direction.y > 0.1f)
+                    if (OnBridge && direction.y > 0.1f)
                     {
-                        rb.velocity = new Vector3((float)direction.normalized.x, bridgeDirection.y, (float)direction.normalized.y) * GameConstants.CHAR_MOVE_SPEED / 1.3f;
+                        rb.velocity = new Vector3((float)direction.normalized.x, BridgeDirection.y, (float)direction.normalized.y) * GameConstants.CHAR_MOVE_SPEED;
                     }
-                    else if (onBridge && direction.y < 0.1f)
+                    else if (OnBridge && direction.y < 0.1f)
                     {
-                        rb.velocity = new Vector3((float)direction.normalized.x, -bridgeDirection.y, (float)direction.normalized.y) * GameConstants.CHAR_MOVE_SPEED / 1.5f;
-                    }*/
-                    //else
-
-                    Vector3 newMovement = new Vector3(direction.normalized.x, rb.velocity.y, direction.normalized.y) * GameConstants.CHAR_MOVE_SPEED / 1.5f;
-                    if (!isGround)
-                    {
-                        newMovement.y = -10f;
+                        rb.velocity = new Vector3((float)direction.normalized.x, -BridgeDirection.y, (float)direction.normalized.y) * GameConstants.CHAR_MOVE_SPEED;
                     }
                     else
                     {
-                        newMovement.y = 0f;
+                        Vector3 newMovement = new Vector3(direction.normalized.x, rb.velocity.y, direction.normalized.y) * GameConstants.CHAR_MOVE_SPEED;
+                        if (!isGround)
+                        {
+                            newMovement.y = -10f;
+                        }
+                        else
+                        {
+                            newMovement.y = 0f;
+                        }
+                        rb.velocity = newMovement;
                     }
-                    rb.velocity = newMovement;
                 }
-
             }
         }
         if (Input.GetMouseButtonUp(0))
@@ -95,7 +98,7 @@ public class PlayerMovement : MonoBehaviour
     private bool CheckGround()
     {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, -transform.up, out hit, GameConstants.RAYCAST_RANGE))
+        if (Physics.Raycast(transform.position, -transform.up, out hit, GameConstants.RAYCAST_RANGE/4))
         {
             return true;
         }
@@ -123,4 +126,5 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
 }
